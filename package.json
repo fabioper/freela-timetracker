@@ -9,19 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "firebase": "^10.4.0",
+    "next": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "next": "latest"
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
-    "typescript": "latest",
-    "@types/react": "latest",
     "@types/node": "latest",
+    "@types/react": "latest",
     "@types/react-dom": "latest",
-    "autoprefixer": "latest",
-    "postcss": "latest",
-    "tailwindcss": "latest",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "autoprefixer": "latest",
     "eslint": "^8.50.0",
     "eslint-config-next": "13.5.2",
     "eslint-config-prettier": "^9.0.0",
@@ -33,7 +32,10 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0"
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "postcss": "latest",
+    "tailwindcss": "latest",
+    "typescript": "latest"
   },
   "eslintConfig": {
     "env": {
@@ -61,20 +63,27 @@
       "@typescript-eslint"
     ],
     "rules": {
-      "prettier/prettier": ["error", {
-        "printWidth": 80,
-        "tabWidth": 2,
-        "singleQuote": false,
-        "trailingComma": "all",
-        "arrowParens": "always",
-        "semi": false,
-        "endOfLine": "auto"
-      }],
+      "prettier/prettier": [
+        "error",
+        {
+          "printWidth": 80,
+          "tabWidth": 2,
+          "singleQuote": false,
+          "trailingComma": "all",
+          "arrowParens": "always",
+          "semi": false,
+          "endOfLine": "auto"
+        }
+      ],
       "jsx-a11y/alt-text": [
         "warn",
         {
-          "elements": ["img"],
-          "img": ["Image"]
+          "elements": [
+            "img"
+          ],
+          "img": [
+            "Image"
+          ]
         }
       ],
       "jsx-a11y/aria-props": "warn",
