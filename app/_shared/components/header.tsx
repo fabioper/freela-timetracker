@@ -1,41 +1,39 @@
 "use client"
 
 import { useAuth } from "@/app/_shared/contexts/auth.provider"
-import Image from "next/image"
+import { Button } from "primereact/button"
+import { Avatar } from "primereact/avatar"
 
 export default function Header() {
   const { login, logout, currentUser } = useAuth()
 
   return (
-    <header className="p-5 flex items-center justify-between">
-      <h1>Header</h1>
+    <header>
+      <div className="py-5 container flex items-center justify-between border-b border-surface-border">
+        <h1>Time Tracker</h1>
 
-      {!currentUser ? (
-        <button onClick={login} className="text-xs underline">
-          Login
-        </button>
-      ) : (
-        <>
-          <div className="flex gap-2 items-start">
-            {currentUser.photoURL && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <Image
-                src={currentUser.photoURL}
-                alt=""
-                width="24"
-                height="24"
-                className="rounded-full w-7"
-              />
-            )}
-            <div>
-              <p className="text-xs">{currentUser.displayName}</p>
-              <button onClick={logout} className="text-xs underline">
-                Sign out
-              </button>
+        {!currentUser ? (
+          <Button label="Login" link onClick={login} />
+        ) : (
+          <>
+            <div className="flex gap-2 items-start">
+              {currentUser.photoURL && (
+                <Avatar image={currentUser.photoURL} shape="circle" />
+              )}
+
+              <div>
+                <p className="text-xs">{currentUser.displayName}</p>
+                <Button
+                  onClick={logout}
+                  label="Sign out"
+                  link
+                  className="p-0"
+                />
+              </div>
             </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
     </header>
   )
 }

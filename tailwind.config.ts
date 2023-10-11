@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: ["class"],
+  /* darkMode: ["class"], */
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -12,7 +12,11 @@ module.exports = {
       center: true,
       padding: "2rem",
     },
-    extend: {},
+    extend: {
+      colors: {
+        "surface-border": "var(--surface-border)",
+      },
+    },
   },
   plugins: [],
 }

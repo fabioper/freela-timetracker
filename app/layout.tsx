@@ -4,6 +4,8 @@ import { Inter } from "next/font/google"
 import React, { PropsWithChildren } from "react"
 import Header from "@/app/_shared/components/header"
 import AuthProvider from "@/app/_shared/contexts/auth.provider"
+import "primereact/resources/themes/soho-dark/theme.css"
+import { PrimeReactProvider } from "primereact/api"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -16,10 +18,12 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="pt-br">
       <body className={inter.className}>
-        <AuthProvider>
-          <Header />
-          {children}
-        </AuthProvider>
+        <PrimeReactProvider>
+          <AuthProvider>
+            <Header />
+            {children}
+          </AuthProvider>
+        </PrimeReactProvider>
       </body>
     </html>
   )
