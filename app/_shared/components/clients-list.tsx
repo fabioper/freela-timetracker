@@ -4,39 +4,28 @@ import { Column } from "primereact/column"
 import { DataTable } from "primereact/datatable"
 import Link from "next/link"
 import { Button } from "primereact/button"
-import { Client } from "@/app/_shared/dtos/client"
 import { orderBy, where } from "@firebase/firestore"
 import { useAuth } from "@/app/_shared/contexts/auth.provider"
 import { useCollection } from "@/app/_shared/hooks/use-collection"
 import { PrimeIcons } from "primereact/api"
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog"
+import { ClientDto } from "@/app/_shared/dtos/client.dto"
+
+const dateFormatter = new Intl.DateTimeFormat("pt-br", {
+  dateStyle: "short",
+  timeStyle: "short",
+})
 
 export default function ClientsList() {
   const { currentUser } = useAuth()
-  const { data: clients, deleteItem } = useCollection<Client>(
+
+  const { data: clients, deleteItem } = useCollection<ClientDto>(
     "clients",
     where("userId", "==", currentUser?.uid),
     orderBy("addedAt", "asc"),
   )
 
-  const dateTemplate = (client: Client) => {
-    const dateFormatter = new Intl.DateTimeFormat("pt-br", {
-      dateStyle: "short",
-      timeStyle: "short",
-    })
-
-    return <time>{dateFormatter.format(client.addedAt.toDate())}</time>
-  }
-
-  const nameTemplate = (client: Client) => {
-    return (
-      <Link href={client.slug}>
-        <Button link label={client.name} className="p-0" />
-      </Link>
-    )
-  }
-
-  const removeClient = async (client: Client) => {
+  const removeClient = async (client: ClientDto) => {
     confirmDialog({
       header: "Deletar cliente",
       message: `Tem certeza que deseja excluir o cliente: ${client.name}?`,
@@ -48,30 +37,38 @@ export default function ClientsList() {
     })
   }
 
-  const actionsTemplate = (client: Client) => {
-    return (
-      <div className="flex justify-end">
-        <Link href={`/${client.slug}/editar`}>
-          <Button
-            icon={PrimeIcons.PENCIL}
-            severity="info"
-            size="small"
-            rounded
-            text
-          />
-        </Link>
+  const dateTemplate = (client: ClientDto) => (
+    <time>{dateFormatter.format(client.addedAt.toDate())}</time>
+  )
 
+  const nameTemplate = (client: ClientDto) => (
+    <Link href={client.slug}>
+      <Button link label={client.name} className="p-0" />
+    </Link>
+  )
+
+  const actionsTemplate = (client: ClientDto) => (
+    <div className="flex justify-end">
+      <Link href={`/${client.slug}/editar`}>
         <Button
-          icon={PrimeIcons.TRASH}
-          severity="danger"
+          icon={PrimeIcons.PENCIL}
+          severity="info"
           size="small"
           rounded
           text
-          onClick={() => removeClient(client)}
         />
-      </div>
-    )
-  }
+      </Link>
+
+      <Button
+        icon={PrimeIcons.TRASH}
+        severity="danger"
+        size="small"
+        rounded
+        text
+        onClick={() => removeClient(client)}
+      />
+    </div>
+  )
 
   return (
     <>
