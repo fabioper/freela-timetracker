@@ -4,22 +4,25 @@ import { Column } from "primereact/column"
 import { DataTable } from "primereact/datatable"
 import Link from "next/link"
 import { Button } from "primereact/button"
+import { Client } from "@/app/_shared/dtos/client"
+import { where } from "@firebase/firestore"
+import { useAuth } from "@/app/_shared/contexts/auth.provider"
+import { useCollection } from "@/app/_shared/hooks/use-collection"
 
-export interface Client {
-  id: string
-  name: string
-  slug: string
-  addedAt: Date
-}
+export default function ClientsList() {
+  const { currentUser } = useAuth()
+  const clients = useCollection<Client>(
+    "clients",
+    where("userId", "==", currentUser?.uid),
+  )
 
-export default function ClientsList({ clients }: { clients: Client[] }) {
   const dateTemplate = (client: Client) => {
     const dateFormatter = new Intl.DateTimeFormat("pt-br", {
       dateStyle: "short",
       timeStyle: "short",
     })
 
-    return <time>{dateFormatter.format(client.addedAt)}</time>
+    return <time>{dateFormatter.format(client.addedAt.toDate())}</time>
   }
 
   const nameTemplate = (client: Client) => {
@@ -38,6 +41,7 @@ export default function ClientsList({ clients }: { clients: Client[] }) {
         body={nameTemplate}
         className="w-full"
       />
+
       <Column
         field="addedAt"
         header="Data de criação"

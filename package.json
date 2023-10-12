@@ -10,12 +10,14 @@
   },
   "dependencies": {
     "firebase": "^10.4.0",
+    "formik": "^2.4.5",
     "next": "latest",
     "primeicons": "^6.0.1",
     "primereact": "^10.0.3",
     "react": "latest",
     "react-dom": "latest",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "yup": "^1.3.2"
   },
   "devDependencies": {
     "@types/node": "latest",
