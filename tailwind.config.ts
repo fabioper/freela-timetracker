@@ -13,6 +13,9 @@ module.exports = {
       padding: "2rem",
     },
     extend: {
+      fontFamily: {
+        sans: "var(--font-inter)",
+      },
       colors: {
         "surface-border": "var(--surface-border)",
       },
