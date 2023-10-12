@@ -69,29 +69,31 @@ export default function ClientsList() {
           text
           onClick={() => removeClient(client)}
         />
-
-        <ConfirmDialog />
       </div>
     )
   }
 
   return (
-    <DataTable value={clients} className="p-datatable-striped">
-      <Column
-        field="name"
-        header="Nome"
-        body={nameTemplate}
-        className="w-full"
-      />
+    <>
+      <DataTable value={clients} className="p-datatable-striped">
+        <Column
+          field="name"
+          header="Nome"
+          body={nameTemplate}
+          className="w-full"
+        />
 
-      <Column
-        field="addedAt"
-        header="Data de criação"
-        body={dateTemplate}
-        className="min-w-[15rem]"
-      />
+        <Column
+          field="addedAt"
+          header="Data de criação"
+          body={dateTemplate}
+          className="min-w-[15rem]"
+        />
 
-      <Column body={actionsTemplate} />
-    </DataTable>
+        <Column body={actionsTemplate} />
+      </DataTable>
+
+      <ConfirmDialog />
+    </>
   )
 }
