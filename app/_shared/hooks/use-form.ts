@@ -1,14 +1,20 @@
-import type React from "react"
+import type { InputHTMLAttributes } from "react"
 import { useCallback, useState } from "react"
 import { useFormik } from "formik"
-import styles from "components/Contact/ContactForm/ContactForm.module.css"
 import { type Schema } from "yup"
 
 interface UseFormConfig<T extends Record<string, any>> {
-  handleSubmit: (values: T) => Promise<void>
   initialValues: T
   schema: Schema
+  onSubmit: (values: T) => void | Promise<void>
 }
+
+type UseFormField = Omit<
+  InputHTMLAttributes<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  >,
+  "value"
+> & { value: string | undefined }
 
 export default function useForm<T extends Record<string, any>>(
   config: UseFormConfig<T>,
@@ -17,7 +23,7 @@ export default function useForm<T extends Record<string, any>>(
 
   const form = useFormik<T>({
     initialValues: config.initialValues,
-    onSubmit: config.handleSubmit,
+    onSubmit: config.onSubmit,
     validationSchema: config.schema,
   })
 
@@ -35,9 +41,7 @@ export default function useForm<T extends Record<string, any>>(
   )
 
   const field = useCallback(
-    (
-      name: keyof T & string,
-    ): React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> => {
+    (name: keyof T & string): UseFormField => {
       return {
         name,
         id: name,
@@ -47,10 +51,13 @@ export default function useForm<T extends Record<string, any>>(
           form.handleChange(event)
         },
         onBlur: form.handleBlur,
-        className: !isValid(name) ? styles.invalid : undefined,
+        ...(!isValid(name)
+          ? { "aria-invalid": true, "data-invalid": true }
+          : { "data-valid": true }),
       }
     },
     [form, isValid, markAsDirty],
   )
+
   return { form, isValid, field }
 }

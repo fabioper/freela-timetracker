@@ -5,7 +5,7 @@ import { DataTable } from "primereact/datatable"
 import Link from "next/link"
 import { Button } from "primereact/button"
 import { Client } from "@/app/_shared/dtos/client"
-import { where } from "@firebase/firestore"
+import { orderBy, where } from "@firebase/firestore"
 import { useAuth } from "@/app/_shared/contexts/auth.provider"
 import { useCollection } from "@/app/_shared/hooks/use-collection"
 import { PrimeIcons } from "primereact/api"
@@ -16,6 +16,7 @@ export default function ClientsList() {
   const { data: clients, deleteItem } = useCollection<Client>(
     "clients",
     where("userId", "==", currentUser?.uid),
+    orderBy("addedAt", "asc"),
   )
 
   const dateTemplate = (client: Client) => {

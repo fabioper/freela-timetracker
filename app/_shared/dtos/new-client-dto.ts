@@ -1,5 +1,4 @@
-export interface NewClient {
-  id: string
+export interface NewClientDto {
   name: string
   slug: string
   addedAt: Date

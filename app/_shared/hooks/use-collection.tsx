@@ -1,9 +1,13 @@
 import {
+  addDoc,
   collection,
   deleteDoc,
   doc,
+  DocumentData,
   onSnapshot,
   QueryFieldFilterConstraint,
+  QueryOrderByConstraint,
+  WithFieldValue,
 } from "@firebase/firestore"
 import { useAuth } from "@/app/_shared/contexts/auth.provider"
 import { useEffect, useState } from "react"
@@ -12,7 +16,7 @@ import { db } from "@/config/firebase"
 
 export function useCollection<T>(
   collectionName: string,
-  ...queryConstraints: QueryFieldFilterConstraint[]
+  ...queryConstraints: (QueryFieldFilterConstraint | QueryOrderByConstraint)[]
 ) {
   const { currentUser } = useAuth()
   const [collectionData, setCollectionData] = useState<T[]>([])
@@ -48,7 +52,13 @@ export function useCollection<T>(
   return {
     data: collectionData,
     async deleteItem(id: string) {
-      await deleteDoc(doc(db, "clients", id))
+      await deleteDoc(doc(db, collectionName, id))
+    },
+    async addItem<T>(data: T) {
+      await addDoc(
+        collection(db, collectionName),
+        data as WithFieldValue<DocumentData>,
+      )
     },
   }
 }
