@@ -3,6 +3,7 @@
 import { useAuth } from "@/app/_shared/contexts/auth.provider"
 import { Button } from "primereact/button"
 import { Avatar } from "primereact/avatar"
+import { PrimeIcons } from "primereact/api"
 
 export default function Header() {
   const { login, logout, currentUser } = useAuth()
@@ -13,7 +14,12 @@ export default function Header() {
         <h1>Time Tracker</h1>
 
         {!currentUser ? (
-          <Button label="Login" link onClick={login} />
+          <Button
+            label="Login"
+            link
+            onClick={login}
+            icon={PrimeIcons.SIGN_IN}
+          />
         ) : (
           <>
             <div className="flex gap-2 items-start">
@@ -22,12 +28,13 @@ export default function Header() {
               )}
 
               <div>
-                <p className="text-xs">{currentUser.displayName}</p>
+                <p className="text-sm">{currentUser.displayName}</p>
                 <Button
                   onClick={logout}
                   label="Sign out"
                   link
                   className="p-0"
+                  icon={PrimeIcons.SIGN_OUT}
                 />
               </div>
             </div>
