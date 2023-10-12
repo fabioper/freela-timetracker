@@ -1,5 +1,7 @@
 import {
   collection,
+  deleteDoc,
+  doc,
   onSnapshot,
   QueryFieldFilterConstraint,
 } from "@firebase/firestore"
@@ -29,7 +31,9 @@ export function useCollection<T>(
     const unsubscribe = onSnapshot(
       clientsFromUserQuery,
       (snapshot) => {
-        setCollectionData(snapshot.docs.map((doc) => doc.data() as T))
+        setCollectionData(
+          snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }) as T),
+        )
       },
       console.error,
     )
@@ -41,5 +45,10 @@ export function useCollection<T>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collectionName, currentUser])
 
-  return collectionData
+  return {
+    data: collectionData,
+    async deleteItem(id: string) {
+      await deleteDoc(doc(db, "clients", id))
+    },
+  }
 }

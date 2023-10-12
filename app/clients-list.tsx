@@ -8,10 +8,12 @@ import { Client } from "@/app/_shared/dtos/client"
 import { where } from "@firebase/firestore"
 import { useAuth } from "@/app/_shared/contexts/auth.provider"
 import { useCollection } from "@/app/_shared/hooks/use-collection"
+import { PrimeIcons } from "primereact/api"
+import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog"
 
 export default function ClientsList() {
   const { currentUser } = useAuth()
-  const clients = useCollection<Client>(
+  const { data: clients, deleteItem } = useCollection<Client>(
     "clients",
     where("userId", "==", currentUser?.uid),
   )
@@ -33,6 +35,45 @@ export default function ClientsList() {
     )
   }
 
+  const removeClient = async (client: Client) => {
+    confirmDialog({
+      header: "Deletar cliente",
+      message: `Tem certeza que deseja excluir o cliente: ${client.name}?`,
+      icon: PrimeIcons.TRASH,
+      acceptLabel: "Sim, excluir",
+      rejectLabel: "Não, mudei de idéia",
+      acceptClassName: "p-button-danger",
+      accept: async () => await deleteItem(client.id),
+    })
+  }
+
+  const actionsTemplate = (client: Client) => {
+    return (
+      <div className="flex justify-end">
+        <Link href={`/${client.slug}/editar`}>
+          <Button
+            icon={PrimeIcons.PENCIL}
+            severity="info"
+            size="small"
+            rounded
+            text
+          />
+        </Link>
+
+        <Button
+          icon={PrimeIcons.TRASH}
+          severity="danger"
+          size="small"
+          rounded
+          text
+          onClick={() => removeClient(client)}
+        />
+
+        <ConfirmDialog />
+      </div>
+    )
+  }
+
   return (
     <DataTable value={clients} className="p-datatable-striped">
       <Column
@@ -48,6 +89,8 @@ export default function ClientsList() {
         body={dateTemplate}
         className="min-w-[15rem]"
       />
+
+      <Column body={actionsTemplate} />
     </DataTable>
   )
 }
