@@ -4,6 +4,7 @@ import { useAuth } from "@/app/_shared/contexts/auth.provider"
 import { Button } from "primereact/button"
 import { Avatar } from "primereact/avatar"
 import { PrimeIcons } from "primereact/api"
+import Link from "next/link"
 
 export default function Header() {
   const { login, logout, currentUser } = useAuth()
@@ -11,7 +12,9 @@ export default function Header() {
   return (
     <header>
       <div className="py-5 container flex items-center justify-between border-b border-surface-border">
-        <h1>Time Tracker</h1>
+        <Link href="/">
+          <h1>Time Tracker</h1>
+        </Link>
 
         {!currentUser ? (
           <Button
