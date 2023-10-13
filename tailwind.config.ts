@@ -18,6 +18,12 @@ module.exports = {
       },
       colors: {
         "surface-border": "var(--surface-border)",
+        card: "#15151c",
+        "card-border": "#343446",
+        "card-hover": "var(--primary-color)",
+      },
+      gridTemplateColumns: {
+        auto: "repeat(auto-fit, minmax(25rem, 1fr))",
       },
     },
   },

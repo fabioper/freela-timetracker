@@ -1,15 +1,15 @@
 "use client"
 
-import { Column } from "primereact/column"
-import { DataTable } from "primereact/datatable"
 import Link from "next/link"
-import { Button } from "primereact/button"
 import { orderBy, where } from "@firebase/firestore"
 import { useAuth } from "@/app/_shared/contexts/auth.provider"
 import { useCollection } from "@/app/_shared/hooks/use-collection"
 import { PrimeIcons } from "primereact/api"
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog"
 import { ClientDto } from "@/app/_shared/dtos/client.dto"
+import { useCallback } from "react"
+import { useRouter } from "next/navigation"
+import { Card } from "@/app/_shared/components/card"
 
 const dateFormatter = new Intl.DateTimeFormat("pt-br", {
   dateStyle: "short",
@@ -18,6 +18,7 @@ const dateFormatter = new Intl.DateTimeFormat("pt-br", {
 
 export default function ClientsList() {
   const { currentUser } = useAuth()
+  const router = useRouter()
 
   const { data: clients, deleteItem } = useCollection<ClientDto>(
     "clients",
@@ -25,72 +26,50 @@ export default function ClientsList() {
     orderBy("addedAt", "asc"),
   )
 
-  const removeClient = async (client: ClientDto) => {
-    confirmDialog({
-      header: "Deletar cliente",
-      message: `Tem certeza que deseja excluir o cliente: ${client.name}?`,
-      icon: PrimeIcons.TRASH,
-      acceptLabel: "Sim, excluir",
-      rejectLabel: "Não, mudei de idéia",
-      acceptClassName: "p-button-danger",
-      accept: async () => await deleteItem(client.id),
-    })
-  }
-
-  const dateTemplate = (client: ClientDto) => (
-    <time>{dateFormatter.format(client.addedAt.toDate())}</time>
+  const removeClient = useCallback(
+    async (client: ClientDto) => {
+      confirmDialog({
+        header: "Deletar cliente",
+        message: `Tem certeza que deseja excluir o cliente: ${client.name}?`,
+        icon: PrimeIcons.TRASH,
+        acceptLabel: "Sim, excluir",
+        rejectLabel: "Não, mudei de idéia",
+        acceptClassName: "p-button-danger",
+        accept: async () => await deleteItem(client.id),
+      })
+    },
+    [deleteItem],
   )
 
-  const nameTemplate = (client: ClientDto) => (
-    <Link href={client.slug}>
-      <Button link label={client.name} className="p-0" />
-    </Link>
-  )
-
-  const actionsTemplate = (client: ClientDto) => (
-    <div className="flex justify-end">
-      <Link href={`/${client.slug}/editar`}>
-        <Button
-          icon={PrimeIcons.PENCIL}
-          severity="info"
-          size="small"
-          rounded
-          text
-        />
-      </Link>
-
-      <Button
-        icon={PrimeIcons.TRASH}
-        severity="danger"
-        size="small"
-        rounded
-        text
-        onClick={() => removeClient(client)}
-      />
-    </div>
+  const getMenuItems = useCallback(
+    (client: ClientDto) => [
+      {
+        label: "Editar",
+        icon: PrimeIcons.PENCIL,
+        command: () => router.push(`/${client.slug}/editar`),
+      },
+      {
+        label: "Remover",
+        icon: PrimeIcons.TRASH,
+        command: () => removeClient(client),
+      },
+    ],
+    [removeClient, router],
   )
 
   return (
-    <>
-      <DataTable value={clients} className="p-datatable-striped">
-        <Column
-          field="name"
-          header="Nome"
-          body={nameTemplate}
-          className="w-full"
-        />
-
-        <Column
-          field="addedAt"
-          header="Data de criação"
-          body={dateTemplate}
-          className="min-w-[15rem]"
-        />
-
-        <Column body={actionsTemplate} />
-      </DataTable>
+    <div className="grid grid-cols-auto gap-2">
+      {clients.map((client) => (
+        <Link href={`/${client.slug}`} key={client.id}>
+          <Card title={client.name} menu={getMenuItems(client)}>
+            <time className="text-sm">
+              {dateFormatter.format(client.addedAt.toDate())}
+            </time>
+          </Card>
+        </Link>
+      ))}
 
       <ConfirmDialog />
-    </>
+    </div>
   )
 }
