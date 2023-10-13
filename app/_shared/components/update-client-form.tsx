@@ -67,7 +67,6 @@ export default function UpdateClientForm({ clientId }: { clientId?: string }) {
   useEffect(() => {
     ;(async () => {
       if (isUpdate) {
-        console.log(clientId)
         const client = await getItemBySlug(clientId)
         if (!client) return
 
@@ -110,7 +109,7 @@ export default function UpdateClientForm({ clientId }: { clientId?: string }) {
         />
 
         <Link href="/">
-          <Button label="Cancelar" type="reset" outlined />
+          <Button label="Cancelar" type="reset" outlined className="w-full" />
         </Link>
       </div>
     </form>
