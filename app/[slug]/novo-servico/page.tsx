@@ -1,16 +1,17 @@
 import PageHeader from "@/shared/components/page-header"
-import { ClientDto } from "@/shared/dtos/client.dto"
+import ServiceForm from "@/shared/components/service-form"
 import { getItemBySlug } from "@/shared/service/firestore"
 import { notFound } from "next/navigation"
 import { Collections } from "@/shared/constants"
-import { Button } from "primereact/button"
-import Link from "next/link"
+import { ClientDto } from "@/shared/dtos/client.dto"
 
-interface ClientPageProps {
+interface NewClientServicePageProps {
   params: { slug: string }
 }
 
-export default async function ClientPage({ params }: ClientPageProps) {
+export default async function NewClientServicePage({
+  params,
+}: NewClientServicePageProps) {
   const client = await getItemBySlug<ClientDto>(
     Collections.Clients,
     params.slug,
@@ -23,11 +24,8 @@ export default async function ClientPage({ params }: ClientPageProps) {
   return (
     <main>
       <div className="container">
-        <PageHeader title={client.name}>
-          <Link href={`/${client.slug}/novo-servico`}>
-            <Button label="Novo serviço" />
-          </Link>
-        </PageHeader>
+        <PageHeader title="Novo serviço" />
+        <ServiceForm clientId={client.id} resetPath={`/${client.slug}`} />
       </div>
     </main>
   )

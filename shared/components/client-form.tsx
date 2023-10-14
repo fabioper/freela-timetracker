@@ -24,7 +24,7 @@ const initialValues = {
 
 const schema = object({ name: string().required("Campo obrigatório") })
 
-export default function UpdateClientForm({ clientId }: { clientId?: string }) {
+export default function ClientForm({ clientId }: { clientId?: string }) {
   const { currentUser } = useAuth()
   const [loading, setIsLoading] = useState(false)
   const router = useRouter()
@@ -47,7 +47,11 @@ export default function UpdateClientForm({ clientId }: { clientId?: string }) {
           addedAt: isUpdate ? values.addedAt : new Date(),
         }
         isUpdate
-          ? await updateItem(Collections.Clients, clientId, updatedValues)
+          ? await updateItem<NewClientDto>(
+              Collections.Clients,
+              clientId,
+              updatedValues,
+            )
           : await addItem<NewClientDto>(Collections.Clients, updatedValues)
 
         return router.push("/")
