@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 import { Card } from "@/shared/components/card"
 import { Message } from "primereact/message"
 import { deleteItem } from "@/shared/service/firestore"
+import { Collections } from "@/shared/constants"
 
 const dateFormatter = new Intl.DateTimeFormat("pt-br", {
   dateStyle: "short",
@@ -23,7 +24,7 @@ export default function ClientsList() {
   const router = useRouter()
 
   const clients = useCollection<ClientDto>(
-    "clients",
+    Collections.Clients,
     where("userId", "==", currentUser?.uid),
     orderBy("addedAt", "asc"),
   )
@@ -36,7 +37,7 @@ export default function ClientsList() {
       acceptLabel: "Sim, excluir",
       rejectLabel: "Não, mudei de idéia",
       acceptClassName: "p-button-danger",
-      accept: async () => await deleteItem("clients", client.id),
+      accept: async () => await deleteItem(Collections.Clients, client.id),
     })
   }, [])
 

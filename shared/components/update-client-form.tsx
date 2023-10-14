@@ -13,6 +13,7 @@ import { object, string } from "yup"
 import { useAuth } from "@/shared/contexts/auth.provider"
 import { addItem, getItemBySlug, updateItem } from "@/shared/service/firestore"
 import { ClientDto } from "@/shared/dtos/client.dto"
+import { Collections } from "@/shared/constants"
 
 const initialValues = {
   name: "",
@@ -27,7 +28,6 @@ export default function UpdateClientForm({ clientId }: { clientId?: string }) {
   const { currentUser } = useAuth()
   const [loading, setIsLoading] = useState(false)
   const router = useRouter()
-  const collectionName = "clients"
 
   const isUpdate = !!clientId
 
@@ -47,8 +47,8 @@ export default function UpdateClientForm({ clientId }: { clientId?: string }) {
           addedAt: isUpdate ? values.addedAt : new Date(),
         }
         isUpdate
-          ? await updateItem(collectionName, clientId, updatedValues)
-          : await addItem<NewClientDto>(collectionName, updatedValues)
+          ? await updateItem(Collections.Clients, clientId, updatedValues)
+          : await addItem<NewClientDto>(Collections.Clients, updatedValues)
 
         return router.push("/")
       } catch (e) {
@@ -64,7 +64,11 @@ export default function UpdateClientForm({ clientId }: { clientId?: string }) {
   useEffect(() => {
     ;(async () => {
       if (isUpdate) {
-        const client = await getItemBySlug<ClientDto>(collectionName, clientId)
+        const client = await getItemBySlug<ClientDto>(
+          Collections.Clients,
+          clientId,
+        )
+
         if (!client) return
 
         await form.setValues({
