@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuth } from "@/app/_shared/contexts/auth.provider"
+import { useAuth } from "@/shared/contexts/auth.provider"
 import { Button } from "primereact/button"
 import { Avatar } from "primereact/avatar"
 import { PrimeIcons } from "primereact/api"

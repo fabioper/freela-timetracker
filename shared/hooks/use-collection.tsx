@@ -4,10 +4,10 @@ import {
   QueryFieldFilterConstraint,
   QueryOrderByConstraint,
 } from "@firebase/firestore"
-import { useAuth } from "@/app/_shared/contexts/auth.provider"
+import { useAuth } from "@/shared/contexts/auth.provider"
 import { useEffect, useState } from "react"
 import { query } from "firebase/firestore"
-import { db } from "@/app/_shared/config/firebase"
+import { db } from "@/shared/config/firebase"
 
 export function useCollection<T extends { id: string }>(
   collectionName: string,

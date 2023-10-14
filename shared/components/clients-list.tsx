@@ -2,16 +2,16 @@
 
 import Link from "next/link"
 import { orderBy, where } from "@firebase/firestore"
-import { useAuth } from "@/app/_shared/contexts/auth.provider"
-import { useCollection } from "@/app/_shared/hooks/use-collection"
+import { useAuth } from "@/shared/contexts/auth.provider"
+import { useCollection } from "@/shared/hooks/use-collection"
 import { PrimeIcons } from "primereact/api"
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog"
-import { ClientDto } from "@/app/_shared/dtos/client.dto"
+import { ClientDto } from "@/shared/dtos/client.dto"
 import { useCallback } from "react"
 import { useRouter } from "next/navigation"
-import { Card } from "@/app/_shared/components/card"
+import { Card } from "@/shared/components/card"
 import { Message } from "primereact/message"
-import { deleteItem } from "@/app/_shared/service/firestore"
+import { deleteItem } from "@/shared/service/firestore"
 
 const dateFormatter = new Intl.DateTimeFormat("pt-br", {
   dateStyle: "short",

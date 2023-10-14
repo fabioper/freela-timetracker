@@ -2,7 +2,7 @@
 
 import { Message } from "primereact/message"
 import { PrimeIcons } from "primereact/api"
-import { useAuth } from "@/app/_shared/contexts/auth.provider"
+import { useAuth } from "@/shared/contexts/auth.provider"
 import { PropsWithChildren } from "react"
 
 export default function Protected({ children }: PropsWithChildren) {

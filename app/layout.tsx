@@ -1,14 +1,14 @@
 import "./globals.css"
 import type { Metadata } from "next"
 import React, { PropsWithChildren } from "react"
-import Header from "@/app/_shared/components/header"
-import AuthProvider from "@/app/_shared/contexts/auth.provider"
+import Header from "@/shared/components/header"
+import AuthProvider from "@/shared/contexts/auth.provider"
 import "primereact/resources/themes/soho-dark/theme.css"
 import "primeicons/primeicons.css"
 import { PrimeReactProvider } from "primereact/api"
-import Protected from "@/app/_shared/components/protected"
-import { inter } from "@/app/_shared/fonts"
-import { TailwindFix } from "@/app/_shared/components/tailwind-fix"
+import Protected from "@/shared/components/protected"
+import { inter } from "@/shared/fonts"
+import { TailwindFix } from "@/shared/components/tailwind-fix"
 
 export const metadata: Metadata = {
   title: "Time Tracker",

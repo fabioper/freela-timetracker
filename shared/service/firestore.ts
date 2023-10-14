@@ -12,7 +12,7 @@ import {
   WithFieldValue,
 } from "@firebase/firestore"
 import { query } from "firebase/firestore"
-import { db } from "@/app/_shared/config/firebase"
+import { db } from "@/shared/config/firebase"
 
 export async function getItemBySlug<T>(
   collectionName: string,

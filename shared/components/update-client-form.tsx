@@ -6,17 +6,13 @@ import { Button } from "primereact/button"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import useForm from "@/app/_shared/hooks/use-form"
-import { NewClientDto } from "@/app/_shared/dtos/new-client.dto"
+import useForm from "@/shared/hooks/use-form"
+import { NewClientDto } from "@/shared/dtos/new-client.dto"
 import slugify from "slugify"
 import { object, string } from "yup"
-import { useAuth } from "@/app/_shared/contexts/auth.provider"
-import {
-  addItem,
-  getItemBySlug,
-  updateItem,
-} from "@/app/_shared/service/firestore"
-import { ClientDto } from "@/app/_shared/dtos/client.dto"
+import { useAuth } from "@/shared/contexts/auth.provider"
+import { addItem, getItemBySlug, updateItem } from "@/shared/service/firestore"
+import { ClientDto } from "@/shared/dtos/client.dto"
 
 const initialValues = {
   name: "",

@@ -14,7 +14,7 @@ import {
   signOut,
   User,
 } from "@firebase/auth"
-import { auth } from "@/app/_shared/config/firebase"
+import { auth } from "@/shared/config/firebase"
 
 const AuthContext = createContext<{
   login(): Promise<void>

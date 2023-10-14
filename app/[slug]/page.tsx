@@ -1,6 +1,6 @@
-import PageHeader from "@/app/_shared/components/page-header"
-import { ClientDto } from "@/app/_shared/dtos/client.dto"
-import { getItemBySlug } from "@/app/_shared/service/firestore"
+import PageHeader from "@/shared/components/page-header"
+import { ClientDto } from "@/shared/dtos/client.dto"
+import { getItemBySlug } from "@/shared/service/firestore"
 import { notFound } from "next/navigation"
 
 interface ClientPageProps {
