@@ -4,7 +4,6 @@ import { InputText } from "primereact/inputtext"
 import clsx from "clsx"
 import { Button } from "primereact/button"
 import Link from "next/link"
-import { useCollection } from "@/app/_shared/hooks/use-collection"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import useForm from "@/app/_shared/hooks/use-form"
@@ -12,6 +11,11 @@ import { NewClientDto } from "@/app/_shared/dtos/new-client.dto"
 import slugify from "slugify"
 import { object, string } from "yup"
 import { useAuth } from "@/app/_shared/contexts/auth.provider"
+import {
+  addItem,
+  getItemBySlug,
+  updateItem,
+} from "@/app/_shared/service/firestore"
 import { ClientDto } from "@/app/_shared/dtos/client.dto"
 
 const initialValues = {
@@ -25,11 +29,9 @@ const schema = object({ name: string().required("Campo obrigatório") })
 
 export default function UpdateClientForm({ clientId }: { clientId?: string }) {
   const { currentUser } = useAuth()
-
-  const { addItem, updateItem, getItemBySlug } =
-    useCollection<ClientDto>("clients")
   const [loading, setIsLoading] = useState(false)
   const router = useRouter()
+  const collectionName = "clients"
 
   const isUpdate = !!clientId
 
@@ -48,10 +50,9 @@ export default function UpdateClientForm({ clientId }: { clientId?: string }) {
           slug: slugify(values.name, { lower: true }),
           addedAt: isUpdate ? values.addedAt : new Date(),
         }
-
         isUpdate
-          ? await updateItem(clientId, updatedValues)
-          : await addItem<NewClientDto>(updatedValues)
+          ? await updateItem(collectionName, clientId, updatedValues)
+          : await addItem<NewClientDto>(collectionName, updatedValues)
 
         return router.push("/")
       } catch (e) {
@@ -67,7 +68,7 @@ export default function UpdateClientForm({ clientId }: { clientId?: string }) {
   useEffect(() => {
     ;(async () => {
       if (isUpdate) {
-        const client = await getItemBySlug(clientId)
+        const client = await getItemBySlug<ClientDto>(collectionName, clientId)
         if (!client) return
 
         await form.setValues({
@@ -78,6 +79,7 @@ export default function UpdateClientForm({ clientId }: { clientId?: string }) {
         })
       }
     })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientId, isUpdate])
 
   return (

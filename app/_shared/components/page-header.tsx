@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react"
 
 interface PageHeaderProps {
-  title: string
+  title: string | undefined
 }
 
 export default function PageHeader({

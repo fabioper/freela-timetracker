@@ -10,6 +10,8 @@ import { ClientDto } from "@/app/_shared/dtos/client.dto"
 import { useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { Card } from "@/app/_shared/components/card"
+import { Message } from "primereact/message"
+import { deleteItem } from "@/app/_shared/service/firestore"
 
 const dateFormatter = new Intl.DateTimeFormat("pt-br", {
   dateStyle: "short",
@@ -20,26 +22,23 @@ export default function ClientsList() {
   const { currentUser } = useAuth()
   const router = useRouter()
 
-  const { data: clients, deleteItem } = useCollection<ClientDto>(
+  const clients = useCollection<ClientDto>(
     "clients",
     where("userId", "==", currentUser?.uid),
     orderBy("addedAt", "asc"),
   )
 
-  const removeClient = useCallback(
-    async (client: ClientDto) => {
-      confirmDialog({
-        header: "Deletar cliente",
-        message: `Tem certeza que deseja excluir o cliente: ${client.name}?`,
-        icon: PrimeIcons.TRASH,
-        acceptLabel: "Sim, excluir",
-        rejectLabel: "Não, mudei de idéia",
-        acceptClassName: "p-button-danger",
-        accept: async () => await deleteItem(client.id),
-      })
-    },
-    [deleteItem],
-  )
+  const removeClient = useCallback(async (client: ClientDto) => {
+    confirmDialog({
+      header: "Deletar cliente",
+      message: `Tem certeza que deseja excluir o cliente: ${client.name}?`,
+      icon: PrimeIcons.TRASH,
+      acceptLabel: "Sim, excluir",
+      rejectLabel: "Não, mudei de idéia",
+      acceptClassName: "p-button-danger",
+      accept: async () => await deleteItem("clients", client.id),
+    })
+  }, [])
 
   const getMenuItems = useCallback(
     (client: ClientDto) => [
@@ -56,6 +55,17 @@ export default function ClientsList() {
     ],
     [removeClient, router],
   )
+
+  if (!currentUser) {
+    return (
+      <Message
+        text="Você precisa estar logado"
+        className="w-full justify-start"
+        severity="warn"
+        icon={PrimeIcons.LOCK}
+      />
+    )
+  }
 
   return (
     <div className="grid grid-cols-auto gap-2">
