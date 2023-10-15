@@ -23,7 +23,7 @@ export default function Timer({
     [loading, onChange, playing],
   )
 
-  if (!playing) {
+  if (playing) {
     return (
       <Button {...buttonProps} severity="secondary" icon={PrimeIcons.PAUSE} />
     )

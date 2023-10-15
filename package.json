@@ -13,6 +13,7 @@
     "encoding": "^0.1.13",
     "firebase": "^10.4.0",
     "formik": "^2.4.5",
+    "immer": "^10.0.3",
     "next": "latest",
     "primeicons": "^6.0.1",
     "primereact": "^10.0.3",

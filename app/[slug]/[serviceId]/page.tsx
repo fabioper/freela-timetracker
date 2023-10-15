@@ -28,7 +28,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
       <div className="container">
         <PageHeader title={service.name} />
 
-        <ServiceStatus />
+        <ServiceStatus serviceId={service.id} />
       </div>
     </main>
   )
