@@ -16,7 +16,7 @@ export default async function EditClientPage({
     <main>
       <div className="container">
         <PageHeader title="Editar cliente" />
-        <ClientForm clientId={params.slug} />
+        <ClientForm clientSlug={params.slug} />
       </div>
     </main>
   )

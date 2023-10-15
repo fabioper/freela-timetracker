@@ -4,7 +4,7 @@ import { InputText } from "primereact/inputtext"
 import clsx from "clsx"
 import { Button } from "primereact/button"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import useForm from "@/shared/hooks/use-form"
 import { NewClientDto } from "@/shared/dtos/new-client.dto"
@@ -24,12 +24,37 @@ const initialValues = {
 
 const schema = object({ name: string().required("Campo obrigatório") })
 
-export default function ClientForm({ clientId }: { clientId?: string }) {
+export default function ClientForm({ clientSlug }: { clientSlug?: string }) {
   const { currentUser } = useAuth()
   const [loading, setIsLoading] = useState(false)
   const router = useRouter()
 
-  const isUpdate = !!clientId
+  const isUpdate = !!clientSlug
+
+  const getClient = useCallback(async () => {
+    const client = await getItemBySlug<ClientDto>(
+      Collections.Clients,
+      clientSlug!,
+    )
+
+    if (!client) {
+      throw new Error(`Client with slug ${clientSlug} not found`)
+    }
+
+    return client
+  }, [clientSlug])
+
+  async function saveClient(updatedValues: NewClientDto) {
+    if (isUpdate) {
+      await updateItem<NewClientDto>(
+        Collections.Clients,
+        (await getClient()).id,
+        updatedValues,
+      )
+    } else {
+      await addItem<NewClientDto>(Collections.Clients, updatedValues)
+    }
+  }
 
   const { field, form } = useForm<NewClientDto>({
     async onSubmit(values) {
@@ -46,13 +71,8 @@ export default function ClientForm({ clientId }: { clientId?: string }) {
           slug: slugify(values.name, { lower: true }),
           addedAt: isUpdate ? values.addedAt : new Date(),
         }
-        isUpdate
-          ? await updateItem<NewClientDto>(
-              Collections.Clients,
-              clientId,
-              updatedValues,
-            )
-          : await addItem<NewClientDto>(Collections.Clients, updatedValues)
+
+        await saveClient(updatedValues)
 
         return router.push("/")
       } catch (e) {
@@ -70,7 +90,7 @@ export default function ClientForm({ clientId }: { clientId?: string }) {
       if (isUpdate) {
         const client = await getItemBySlug<ClientDto>(
           Collections.Clients,
-          clientId,
+          clientSlug,
         )
 
         if (!client) return
@@ -84,7 +104,7 @@ export default function ClientForm({ clientId }: { clientId?: string }) {
       }
     })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clientId, isUpdate])
+  }, [clientSlug, isUpdate])
 
   return (
     <form

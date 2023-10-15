@@ -4,7 +4,7 @@ import { useAuth } from "@/shared/contexts/auth.provider"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import useForm from "@/shared/hooks/use-form"
-import { addItem, getItemBySlug, updateItem } from "@/shared/service/firestore"
+import { addItem, getItemById, updateItem } from "@/shared/service/firestore"
 import { Collections } from "@/shared/constants"
 import { ServiceDto } from "@/shared/dtos/service.dto"
 import { NewServiceDto } from "@/shared/dtos/new-service.dto"
@@ -62,6 +62,8 @@ export default function ServiceForm({
           clientId,
         }
 
+        console.log(updatedValues, serviceId)
+
         isUpdate
           ? await updateItem<NewServiceDto>(
               Collections.Services,
@@ -84,7 +86,7 @@ export default function ServiceForm({
   useEffect(() => {
     ;(async () => {
       if (isUpdate) {
-        const service = await getItemBySlug<ServiceDto>(
+        const service = await getItemById<ServiceDto>(
           Collections.Services,
           serviceId,
         )

@@ -14,6 +14,11 @@ import {
 import { query } from "firebase/firestore"
 import { db } from "@/shared/config/firebase"
 
+export async function getItemById<T>(collectionName: string, id: string) {
+  const docData = await getDoc(doc(db, collectionName, id))
+  return { ...docData.data(), id: docData.id } as T
+}
+
 export async function getItemBySlug<T>(
   collectionName: string,
   slug: string,
@@ -26,17 +31,15 @@ export async function getItemBySlug<T>(
     return
   }
 
-  const docData = await getDoc(doc(db, collectionName, documents.docs[0].id))
-
-  return { ...docData.data(), id: docData.id } as T
+  return await getItemById<T>(collectionName, documents.docs[0].id)
 }
 
 export async function updateItem<K>(
   collectionName: string,
-  slug: string,
+  id: string,
   data: K,
 ) {
-  const document = await getItemBySlug<DocumentData>(collectionName, slug)
+  const document = await getItemById<DocumentData>(collectionName, id)
 
   if (!document) return
 

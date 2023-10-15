@@ -55,7 +55,7 @@ export default function ServicesList({ clientId }: ServicesListProps) {
   return (
     <div className="grid grid-cols-auto gap-2">
       {services.map((service) => (
-        <Link href={service.id} key={service.id}>
+        <Link href={`${pathname}/${service.id}`} key={service.id}>
           <Card title={service.name} menu={getMenuItems(service)} />
         </Link>
       ))}
