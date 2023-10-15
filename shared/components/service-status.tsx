@@ -1,7 +1,7 @@
 "use client"
 
 import Timer from "@/shared/components/timer"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { updateItem } from "@/shared/service/firestore"
 import { Collections } from "@/shared/constants"
 import { ServiceDto } from "@/shared/dtos/service.dto"
@@ -41,9 +41,13 @@ function serviceToNewServiceDto(service: ServiceDto) {
 }
 
 export default function ServiceStatus({ serviceId }: ServiceStatusProps) {
-  const [isPlaying, setIsPlaying] = useState(false)
   const [loading, setLoading] = useState(false)
   const { service } = useServiceOfId(serviceId)
+
+  const isPlaying = useMemo(() => {
+    const lastInterval = service?.timerIntervals.at(-1)
+    return Boolean(lastInterval && lastInterval.end === null)
+  }, [service])
 
   if (!service) {
     return <></>
@@ -75,8 +79,6 @@ export default function ServiceStatus({ serviceId }: ServiceStatusProps) {
           playing ? handlePlaying(draft) : handlePause(draft),
         ),
       )
-
-      setIsPlaying(playing)
     } catch (e) {
       console.error(e)
     } finally {
