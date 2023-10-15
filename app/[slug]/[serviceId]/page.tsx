@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { ClientDto } from "@/shared/dtos/client.dto"
 import { ServiceDto } from "@/shared/dtos/service.dto"
 import PageHeader from "@/shared/components/page-header"
+import ServiceStatus from "@/shared/components/service-status"
 
 interface ServicePageProps {
   params: { slug: string; serviceId: string }
@@ -25,6 +26,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
     <main>
       <div className="container">
         <PageHeader title={service.name} />
+
+        <ServiceStatus />
       </div>
     </main>
   )

@@ -17,8 +17,9 @@ module.exports = {
         sans: "var(--font-inter)",
       },
       colors: {
+        primary: "var(--primary-color",
         "surface-border": "var(--surface-border)",
-        card: "#15151c",
+        card: "#101010",
         "card-border": "#343446",
         "card-hover": "var(--primary-color)",
       },

@@ -11,6 +11,7 @@ import { PrimeIcons } from "primereact/api"
 import { usePathname, useRouter } from "next/navigation"
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog"
 import { deleteItem } from "@/shared/service/firestore"
+import { dateFormatter } from "@/shared/utils/date"
 
 interface ServicesListProps {
   clientId: string
@@ -56,7 +57,11 @@ export default function ServicesList({ clientId }: ServicesListProps) {
     <div className="grid grid-cols-auto gap-2">
       {services.map((service) => (
         <Link href={`${pathname}/${service.id}`} key={service.id}>
-          <Card title={service.name} menu={getMenuItems(service)} />
+          <Card title={service.name} menu={getMenuItems(service)}>
+            <time className="text-sm">
+              {dateFormatter.format(service.addedAt.toDate())}
+            </time>
+          </Card>
         </Link>
       ))}
       <ConfirmDialog />

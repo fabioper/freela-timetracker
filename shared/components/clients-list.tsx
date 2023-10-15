@@ -13,11 +13,7 @@ import { Card } from "@/shared/components/card"
 import { Message } from "primereact/message"
 import { deleteItem } from "@/shared/service/firestore"
 import { Collections } from "@/shared/constants"
-
-const dateFormatter = new Intl.DateTimeFormat("pt-br", {
-  dateStyle: "short",
-  timeStyle: "short",
-})
+import { dateFormatter } from "@/shared/utils/date"
 
 export default function ClientsList() {
   const { currentUser } = useAuth()
