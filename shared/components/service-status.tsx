@@ -18,7 +18,8 @@ function useServiceOfId(serviceId: string) {
   const [service, setService] = useState<ServiceDto>()
 
   useEffect(() => {
-    onSnapshot(doc(db, Collections.Services, serviceId), (snapshot) => {
+    const serviceDoc = doc(db, Collections.Services, serviceId)
+    onSnapshot(serviceDoc, (snapshot) => {
       setService({ ...snapshot.data(), id: snapshot.id } as ServiceDto)
     })
 
@@ -48,41 +49,39 @@ export default function ServiceStatus({ serviceId }: ServiceStatusProps) {
     return <></>
   }
 
-  const play = () => {
-    setLoading(true)
-
-    updateItem<NewServiceDto>(
-      Collections.Services,
-      serviceId,
-      produce(serviceToNewServiceDto(service), (draft) => {
-        const nextIndex = draft.timerIntervals.length
-        draft.timerIntervals[nextIndex] = {
-          start: new Date(),
-          end: null,
-        }
-      }),
-    )
-      .then(() => setIsPlaying(true))
-      .catch(console.error)
-      .finally(() => setLoading(false))
+  const handlePlaying = (service: NewServiceDto) => {
+    const nextIndex = service.timerIntervals.length
+    service.timerIntervals[nextIndex] = {
+      start: new Date(),
+      end: null,
+    }
   }
 
-  const pause = () => {
+  const handlePause = (service: NewServiceDto) => {
+    const lastInterval = service.timerIntervals.at(-1)
+    if (lastInterval) {
+      lastInterval.end = new Date()
+    }
+  }
+
+  const handleTimerChange = async (playing: boolean) => {
     setLoading(true)
 
-    updateItem<NewServiceDto>(
-      Collections.Services,
-      serviceId,
-      produce(serviceToNewServiceDto(service), (draft) => {
-        const lastInterval = draft.timerIntervals.at(-1)
-        if (lastInterval) {
-          lastInterval.end = new Date()
-        }
-      }),
-    )
-      .then(() => setIsPlaying(false))
-      .catch(console.error)
-      .finally(() => setLoading(false))
+    try {
+      await updateItem<NewServiceDto>(
+        Collections.Services,
+        serviceId,
+        produce(serviceToNewServiceDto(service), (draft) =>
+          playing ? handlePlaying(draft) : handlePause(draft),
+        ),
+      )
+
+      setIsPlaying(playing)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -90,9 +89,7 @@ export default function ServiceStatus({ serviceId }: ServiceStatusProps) {
       <Timer
         playing={isPlaying}
         loading={loading}
-        onChange={(playing) => {
-          !playing ? pause() : play()
-        }}
+        onChange={handleTimerChange}
       />
     </div>
   )
