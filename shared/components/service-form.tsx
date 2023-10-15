@@ -45,7 +45,7 @@ export default function ServiceForm({
 
   const isUpdate = !!serviceId
 
-  const { field, form } = useForm<NewServiceDto>({
+  const { field, form, isValid } = useForm<NewServiceDto>({
     async onSubmit(values) {
       if (!currentUser) {
         return
@@ -114,11 +114,11 @@ export default function ServiceForm({
         <label htmlFor="name">Nome</label>
         <InputText
           placeholder="Insira o nome do serviço"
-          className={clsx({ "p-invalid": !!form.errors.name })}
+          className={clsx({ "p-invalid": !isValid("name") })}
           {...field("name")}
         />
 
-        {!!form.errors.name && (
+        {!isValid("name") && (
           <small className="text-red-300 text-xs mt-1">
             {form.errors.name}
           </small>
@@ -129,7 +129,7 @@ export default function ServiceForm({
         <label htmlFor="hourValue">Valor por hora</label>
         <InputNumber
           placeholder="Insira o valor por hora"
-          className={clsx({ "p-invalid": !!form.errors.hourValue })}
+          className={clsx({ "p-invalid": !isValid("hourValue") })}
           name="hourValue"
           onChange={(event) => {
             form.setFieldValue("hourValue", event.value)
@@ -142,7 +142,7 @@ export default function ServiceForm({
           mode="currency"
         />
 
-        {!!form.errors.hourValue && (
+        {!isValid("hourValue") && (
           <small className="text-red-300 text-xs mt-1">
             {form.errors.hourValue}
           </small>
@@ -153,7 +153,7 @@ export default function ServiceForm({
         <label htmlFor="estimatedHoursTotal">Horas estimadas</label>
         <InputNumber
           placeholder="Insira as horas estimadas para este serviço"
-          className={clsx({ "p-invalid": !!form.errors.estimatedHoursTotal })}
+          className={clsx({ "p-invalid": !isValid("estimatedHoursTotal") })}
           name="estimatedHoursTotal"
           onChange={(event) => {
             form.setFieldValue("estimatedHoursTotal", event.value)
@@ -163,7 +163,7 @@ export default function ServiceForm({
           inputId="estimatedHoursTotal"
         />
 
-        {!!form.errors.hourValue && (
+        {!isValid("estimatedHoursTotal") && (
           <small className="text-red-300 text-xs mt-1">
             {form.errors.hourValue}
           </small>
