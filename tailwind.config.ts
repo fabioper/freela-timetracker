@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  /* darkMode: ["class"], */
   content: [
     "./pages/**/*.{ts,tsx}",
     "./shared/**/*.{ts,tsx}",
@@ -24,7 +23,7 @@ module.exports = {
         "card-hover": "var(--primary-color)",
       },
       gridTemplateColumns: {
-        auto: "repeat(auto-fit, minmax(25rem, 1fr))",
+        auto: "repeat(auto-fill, minmax(25rem, 1fr))",
       },
     },
   },

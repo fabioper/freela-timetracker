@@ -4,7 +4,7 @@ import { useAuth } from "@/shared/contexts/auth.provider"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import useForm from "@/shared/hooks/use-form"
-import { addItem, getItemById, updateItem } from "@/shared/service/firestore"
+import { getItemById, upsertItem } from "@/shared/service/firestore"
 import { Collections } from "@/shared/constants"
 import { ServiceDto } from "@/shared/dtos/service.dto"
 import { NewServiceDto } from "@/shared/dtos/new-service.dto"
@@ -15,12 +15,14 @@ import { Button } from "primereact/button"
 import Link from "next/link"
 import { InputNumber } from "primereact/inputnumber"
 
-const initialValues: Omit<NewServiceDto, "hourValue" | "estimatedHoursTotal"> =
-  {
-    name: "",
-    addedAt: new Date(),
-    clientId: "",
-  }
+const initialValues: Omit<
+  NewServiceDto,
+  "hourValue" | "estimatedHoursTotal" | "timerIntervals"
+> = {
+  name: "",
+  addedAt: new Date(),
+  clientId: "",
+}
 
 const schema = object({
   name: string().required("Campo obrigatório"),
@@ -60,17 +62,14 @@ export default function ServiceForm({
           hourValue: values.hourValue,
           addedAt: isUpdate ? values.addedAt : new Date(),
           clientId,
+          timerIntervals: isUpdate ? values.timerIntervals : [],
         }
 
-        console.log(updatedValues, serviceId)
-
-        isUpdate
-          ? await updateItem<NewServiceDto>(
-              Collections.Services,
-              serviceId,
-              updatedValues,
-            )
-          : await addItem<NewServiceDto>(Collections.Services, updatedValues)
+        await upsertItem<NewServiceDto>(
+          Collections.Services,
+          updatedValues,
+          serviceId,
+        )
 
         return router.push(resetPath)
       } catch (e) {
@@ -99,6 +98,7 @@ export default function ServiceForm({
           estimatedHoursTotal: service.estimatedHoursTotal,
           hourValue: service.hourValue,
           clientId: service.clientId,
+          timerIntervals: service.timerIntervals,
         })
       }
     })()

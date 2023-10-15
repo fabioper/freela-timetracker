@@ -15,6 +15,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
     Collections.Clients,
     params.slug,
   )
+
   const service = await getItemById<ServiceDto>(
     Collections.Services,
     params.serviceId,

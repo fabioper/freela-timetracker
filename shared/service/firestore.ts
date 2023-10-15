@@ -56,6 +56,18 @@ export async function addItem<T>(collectionName: string, data: T) {
   )
 }
 
+export async function upsertItem<T>(
+  collection: string,
+  data: T,
+  itemId?: string,
+) {
+  if (itemId) {
+    return await updateItem<T>(collection, itemId, data)
+  }
+
+  return await addItem<T>(collection, data)
+}
+
 export async function deleteItem(collectionName: string, id: string) {
   await deleteDoc(doc(db, collectionName, id))
 }

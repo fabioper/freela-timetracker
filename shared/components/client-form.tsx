@@ -4,14 +4,14 @@ import { InputText } from "primereact/inputtext"
 import clsx from "clsx"
 import { Button } from "primereact/button"
 import Link from "next/link"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import useForm from "@/shared/hooks/use-form"
 import { NewClientDto } from "@/shared/dtos/new-client.dto"
 import slugify from "slugify"
 import { object, string } from "yup"
 import { useAuth } from "@/shared/contexts/auth.provider"
-import { addItem, getItemBySlug, updateItem } from "@/shared/service/firestore"
+import { getItemBySlug, upsertItem } from "@/shared/service/firestore"
 import { ClientDto } from "@/shared/dtos/client.dto"
 import { Collections } from "@/shared/constants"
 
@@ -24,37 +24,24 @@ const initialValues = {
 
 const schema = object({ name: string().required("Campo obrigatório") })
 
+const getClientIdFromSlug = async (clientSlug?: string) => {
+  if (!clientSlug) return
+
+  const client = await getItemBySlug<ClientDto>(Collections.Clients, clientSlug)
+
+  if (!client) {
+    throw new Error(`Client with slug ${clientSlug} not found`)
+  }
+
+  return client.id
+}
+
 export default function ClientForm({ clientSlug }: { clientSlug?: string }) {
   const { currentUser } = useAuth()
   const [loading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const isUpdate = !!clientSlug
-
-  const getClient = useCallback(async () => {
-    const client = await getItemBySlug<ClientDto>(
-      Collections.Clients,
-      clientSlug!,
-    )
-
-    if (!client) {
-      throw new Error(`Client with slug ${clientSlug} not found`)
-    }
-
-    return client
-  }, [clientSlug])
-
-  async function saveClient(updatedValues: NewClientDto) {
-    if (isUpdate) {
-      await updateItem<NewClientDto>(
-        Collections.Clients,
-        (await getClient()).id,
-        updatedValues,
-      )
-    } else {
-      await addItem<NewClientDto>(Collections.Clients, updatedValues)
-    }
-  }
 
   const { field, form } = useForm<NewClientDto>({
     async onSubmit(values) {
@@ -72,7 +59,8 @@ export default function ClientForm({ clientSlug }: { clientSlug?: string }) {
           addedAt: isUpdate ? values.addedAt : new Date(),
         }
 
-        await saveClient(updatedValues)
+        const clientIdIfUpdate = await getClientIdFromSlug(clientSlug)
+        await upsertItem(Collections.Clients, updatedValues, clientIdIfUpdate)
 
         return router.push("/")
       } catch (e) {

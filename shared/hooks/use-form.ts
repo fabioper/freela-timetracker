@@ -1,5 +1,5 @@
 import type { InputHTMLAttributes } from "react"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useFormik } from "formik"
 import { type Schema } from "yup"
 
@@ -59,5 +59,5 @@ export default function useForm<T extends Record<string, any>>(
     [form, isValid, markAsDirty],
   )
 
-  return { form, isValid, field }
+  return useMemo(() => ({ form, isValid, field }), [field, form, isValid])
 }
