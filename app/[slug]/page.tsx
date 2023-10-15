@@ -5,6 +5,7 @@ import { notFound } from "next/navigation"
 import { Collections } from "@/shared/constants"
 import { Button } from "primereact/button"
 import Link from "next/link"
+import ServicesList from "@/shared/components/services-list"
 
 interface ClientPageProps {
   params: { slug: string }
@@ -28,6 +29,8 @@ export default async function ClientPage({ params }: ClientPageProps) {
             <Button label="Novo serviço" />
           </Link>
         </PageHeader>
+
+        <ServicesList clientId={client.id} />
       </div>
     </main>
   )

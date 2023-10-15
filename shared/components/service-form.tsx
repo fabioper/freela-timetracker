@@ -64,13 +64,13 @@ export default function ServiceForm({
 
         isUpdate
           ? await updateItem<NewServiceDto>(
-              Collections.Clients,
+              Collections.Services,
               serviceId,
               updatedValues,
             )
-          : await addItem<NewServiceDto>(Collections.Clients, updatedValues)
+          : await addItem<NewServiceDto>(Collections.Services, updatedValues)
 
-        return router.push("/")
+        return router.push(resetPath)
       } catch (e) {
         console.error(e)
       } finally {
@@ -84,19 +84,19 @@ export default function ServiceForm({
   useEffect(() => {
     ;(async () => {
       if (isUpdate) {
-        const client = await getItemBySlug<ServiceDto>(
-          Collections.Clients,
+        const service = await getItemBySlug<ServiceDto>(
+          Collections.Services,
           serviceId,
         )
 
-        if (!client) return
+        if (!service) return
 
         await form.setValues({
-          name: client.name,
-          addedAt: client.addedAt.toDate(),
-          estimatedHoursTotal: client.estimatedHoursTotal,
-          hourValue: client.hourValue,
-          clientId: client.clientId,
+          name: service.name,
+          addedAt: service.addedAt.toDate(),
+          estimatedHoursTotal: service.estimatedHoursTotal,
+          hourValue: service.hourValue,
+          clientId: service.clientId,
         })
       }
     })()
