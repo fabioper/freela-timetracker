@@ -20,8 +20,5 @@ body {
   gap: 2rem;
   background: var(--surface-ground);
   color: var(--text-color);
-}
-
-body, .p-component {
   @apply font-sans;
 }
