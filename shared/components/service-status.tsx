@@ -33,21 +33,51 @@ function serviceToNewServiceDto(service: ServiceDto) {
   return {
     name: service.name,
     addedAt: service.addedAt.toDate(),
-    timerIntervals: service.timerIntervals,
+    timerIntervals: service.timerIntervals.map((interval) => ({
+      start: interval.start.toDate(),
+      end: interval.end?.toDate() || null,
+    })),
     estimatedHoursTotal: service.estimatedHoursTotal,
     hourValue: service.hourValue,
     clientId: service.clientId,
   } as NewServiceDto
 }
 
+function getTotalTime(service: ServiceDto) {
+  return service.timerIntervals
+    .map((interval) => {
+      const start = interval.start.toDate()
+      const end = interval.end?.toDate() || new Date()
+      return Math.abs(start.getTime() - end.getTime())
+    })
+    .reduce((a, b) => a + b, 0)
+}
+
 export default function ServiceStatus({ serviceId }: ServiceStatusProps) {
   const [loading, setLoading] = useState(false)
   const { service } = useServiceOfId(serviceId)
+  const [total, setTotal] = useState<number>(0)
 
   const isPlaying = useMemo(() => {
     const lastInterval = service?.timerIntervals.at(-1)
     return Boolean(lastInterval && lastInterval.end === null)
   }, [service])
+
+  useEffect(() => {
+    if (!service) {
+      return
+    }
+
+    if (isPlaying) {
+      const interval = setInterval(() => {
+        setTotal(getTotalTime(service))
+      }, 1000)
+
+      return () => clearInterval(interval)
+    }
+
+    setTotal(getTotalTime(service))
+  }, [isPlaying, service])
 
   if (!service) {
     return <></>
@@ -92,6 +122,7 @@ export default function ServiceStatus({ serviceId }: ServiceStatusProps) {
         playing={isPlaying}
         loading={loading}
         onChange={handleTimerChange}
+        duration={total}
       />
     </div>
   )

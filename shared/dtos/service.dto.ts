@@ -1,5 +1,4 @@
 import { Timestamp } from "@firebase/firestore"
-import { TimerIntervalDto } from "@/shared/dtos/new-service.dto"
 
 export interface ServiceDto {
   id: string
@@ -8,5 +7,8 @@ export interface ServiceDto {
   estimatedHoursTotal?: number
   addedAt: Timestamp
   clientId: string
-  timerIntervals: TimerIntervalDto[]
+  timerIntervals: {
+    start: Timestamp
+    end: Timestamp | null
+  }[]
 }

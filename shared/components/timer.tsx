@@ -1,16 +1,19 @@
 import { Button, ButtonProps } from "primereact/button"
 import { PrimeIcons } from "primereact/api"
 import { useMemo } from "react"
+import { formatDuration } from "@/shared/utils/date"
 
 interface TimerProps {
   playing: boolean
   loading?: boolean
   onChange: (isPlaying: boolean) => void | Promise<void>
+  duration: number
 }
 
 export default function Timer({
   playing,
   loading = false,
+  duration,
   onChange,
 }: TimerProps) {
   const buttonProps: ButtonProps = useMemo(
@@ -23,11 +26,20 @@ export default function Timer({
     [loading, onChange, playing],
   )
 
-  if (playing) {
-    return (
-      <Button {...buttonProps} severity="secondary" icon={PrimeIcons.PAUSE} />
-    )
-  }
+  const button = useMemo(() => {
+    if (playing) {
+      return (
+        <Button {...buttonProps} severity="secondary" icon={PrimeIcons.PAUSE} />
+      )
+    }
 
-  return <Button {...buttonProps} icon={PrimeIcons.PLAY} severity="success" />
+    return <Button {...buttonProps} icon={PrimeIcons.PLAY} severity="success" />
+  }, [buttonProps, playing])
+
+  return (
+    <div>
+      {formatDuration(duration)}
+      {button}
+    </div>
+  )
 }
