@@ -10,6 +10,7 @@ import { doc, onSnapshot } from "@firebase/firestore"
 import { db } from "@/shared/config/firebase"
 import { produce } from "immer"
 import { durationFrom } from "@/shared/utils/date"
+import { currencyFormatter } from "@/shared/utils/number"
 
 interface ServiceStatusProps {
   serviceId: string
@@ -54,6 +55,32 @@ function getTotalTimeSpent(service: ServiceDto) {
     .reduce((a, b) => a + b, 0)
 }
 
+function InfoLine({
+  label,
+  value,
+  featured = false,
+}: {
+  label: string
+  value: string
+  featured?: boolean
+}) {
+  if (featured) {
+    return (
+      <div className="flex items-center gap-2 flex-col justify-center">
+        <strong className="font-normal text-[#454545]">{label}:</strong>
+        <span className="text-2xl">{value}</span>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex items-center gap-2 justify-between">
+      <strong className="font-normal text-[#454545]">{label}:</strong>
+      <span className="text-lg">{value}</span>
+    </div>
+  )
+}
+
 export default function ServiceStatus({ serviceId }: ServiceStatusProps) {
   const [loading, setLoading] = useState(false)
   const { service } = useServiceOfId(serviceId)
@@ -62,6 +89,11 @@ export default function ServiceStatus({ serviceId }: ServiceStatusProps) {
     const lastInterval = service?.timerIntervals.at(-1)
     return Boolean(lastInterval && lastInterval.end === null)
   }, [service])
+
+  const estimatedHours = useMemo(
+    () => service?.estimatedHoursTotal ?? 0,
+    [service?.estimatedHoursTotal],
+  )
 
   const [totalTime, setTotalTime] = useState<number>(0)
 
@@ -119,58 +151,40 @@ export default function ServiceStatus({ serviceId }: ServiceStatusProps) {
   }
 
   return (
-    <div>
-      <Timer
-        playing={isPlaying}
-        loading={loading}
-        onChange={handleTimerChange}
-        duration={totalTime}
-      >
-        {(time) => (
-          <div className="w-full">
-            <div className="flex items-center justify-between gap-2">
-              <strong className="font-normal text-[#454545]">
-                Horas estimadas:
-              </strong>
-              <span className="text-lg">{service.estimatedHoursTotal}h</span>
-            </div>
-            <div className="flex items-center justify-between gap-2">
-              <strong className="font-normal text-[#454545]">
-                Horas restantes:
-              </strong>
-              <span className="text-lg">
-                {service.estimatedHoursTotal ??
-                  0 - durationFrom(totalTime).hours}
-                h
-              </span>
-            </div>
+    <Timer
+      playing={isPlaying}
+      loading={loading}
+      onChange={handleTimerChange}
+      duration={totalTime}
+    >
+      {(time) => {
+        return (
+          <div className="w-full flex flex-col gap-2 justify-center md:max-w-lg">
+            <InfoLine
+              label="Tempo estimado"
+              value={(service?.estimatedHoursTotal ?? 0) + "h"}
+            />
+            <InfoLine
+              label="Horas restantes"
+              value={estimatedHours - durationFrom(totalTime).hours + "h"}
+            />
+            <InfoLine
+              label="Valor por hora"
+              value={currencyFormatter.format(service.hourValue)}
+            />
 
-            <div className="flex items-center justify-between gap-2">
-              <strong className="font-normal text-[#454545]">
-                Valor por hora:
-              </strong>
-              <span className="text-lg">
-                {new Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(service.hourValue)}
-              </span>
-            </div>
+            <div className="my-10 self-center">{time}</div>
 
-            <div className="my-10">{time}</div>
-
-            <div className="flex items-center justify-between gap-2">
-              <strong className="font-light text-xl">Valor por hora:</strong>
-              <span className="text-lg">
-                {new Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(durationFrom(totalTime).hours * service.hourValue)}
-              </span>
-            </div>
+            <InfoLine
+              label="Total"
+              featured
+              value={currencyFormatter.format(
+                durationFrom(totalTime).hours * service.hourValue,
+              )}
+            />
           </div>
-        )}
-      </Timer>
-    </div>
+        )
+      }}
+    </Timer>
   )
 }

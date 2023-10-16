@@ -8,7 +8,7 @@ interface TimerProps {
   loading?: boolean
   onChange: (isPlaying: boolean) => void | Promise<void>
   duration: number
-  children: (time: ReactNode) => ReactNode
+  children?: (time: ReactNode) => ReactNode
 }
 
 export default function Timer({
@@ -40,14 +40,16 @@ export default function Timer({
   }, [buttonProps, playing])
 
   return (
-    <div className="flex flex-col items-center gap-10 py-10">
-      <div className="flex flex-col gap-5 items-center justify-center rounded-full">
-        {children(
-          <time className="flex text-6xl md:text-9xl font-light">
-            {formatDuration(duration)}
-          </time>,
-        )}
-      </div>
+    <div className="flex flex-col items-center gap-10">
+      {children && (
+        <div className="flex flex-col gap-5 items-center justify-center rounded-full w-full">
+          {children(
+            <time className="flex text-6xl md:text-9xl font-light">
+              {formatDuration(duration)}
+            </time>,
+          )}
+        </div>
+      )}
 
       {button}
     </div>
