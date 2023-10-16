@@ -9,8 +9,8 @@ import { NewServiceDto } from "@/shared/dtos/new-service.dto"
 import { doc, onSnapshot } from "@firebase/firestore"
 import { db } from "@/shared/config/firebase"
 import { produce } from "immer"
-import { durationFrom } from "@/shared/utils/date"
 import { currencyFormatter } from "@/shared/utils/number"
+import { getHourFrom } from "@/shared/utils/date"
 
 interface ServiceStatusProps {
   serviceId: string
@@ -83,6 +83,8 @@ function InfoLine({
 
 export default function ServiceStatus({ serviceId }: ServiceStatusProps) {
   const [loading, setLoading] = useState(false)
+  const [totalTime, setTotalTime] = useState<number>(0)
+
   const { service } = useServiceOfId(serviceId)
 
   const isPlaying = useMemo(() => {
@@ -90,12 +92,13 @@ export default function ServiceStatus({ serviceId }: ServiceStatusProps) {
     return Boolean(lastInterval && lastInterval.end === null)
   }, [service])
 
-  const estimatedHours = useMemo(
-    () => service?.estimatedHoursTotal ?? 0,
-    [service?.estimatedHoursTotal],
-  )
+  const estimatedHours = useMemo(() => {
+    return service?.estimatedHoursTotal ?? 0
+  }, [service?.estimatedHoursTotal])
 
-  const [totalTime, setTotalTime] = useState<number>(0)
+  const workedHours = useMemo(() => {
+    return getHourFrom(totalTime)
+  }, [totalTime])
 
   useEffect(() => {
     if (!service) {
@@ -157,34 +160,30 @@ export default function ServiceStatus({ serviceId }: ServiceStatusProps) {
       onChange={handleTimerChange}
       duration={totalTime}
     >
-      {(time) => {
-        return (
-          <div className="w-full flex flex-col gap-2 justify-center md:max-w-lg">
-            <InfoLine
-              label="Tempo estimado"
-              value={(service?.estimatedHoursTotal ?? 0) + "h"}
-            />
-            <InfoLine
-              label="Horas restantes"
-              value={estimatedHours - durationFrom(totalTime).hours + "h"}
-            />
-            <InfoLine
-              label="Valor por hora"
-              value={currencyFormatter.format(service.hourValue)}
-            />
+      {(time) => (
+        <div className="w-full flex flex-col gap-2 justify-center md:max-w-lg">
+          <InfoLine
+            label="Tempo estimado"
+            value={(service?.estimatedHoursTotal ?? 0) + "h"}
+          />
+          <InfoLine
+            label="Horas restantes"
+            value={estimatedHours - workedHours + "h"}
+          />
+          <InfoLine
+            label="Valor por hora"
+            value={currencyFormatter.format(service.hourValue)}
+          />
 
-            <div className="my-10 self-center">{time}</div>
+          <div className="my-5 md:my-10 self-center">{time}</div>
 
-            <InfoLine
-              label="Total"
-              featured
-              value={currencyFormatter.format(
-                durationFrom(totalTime).hours * service.hourValue,
-              )}
-            />
-          </div>
-        )
-      }}
+          <InfoLine
+            label="Total"
+            featured
+            value={currencyFormatter.format(workedHours * service.hourValue)}
+          />
+        </div>
+      )}
     </Timer>
   )
 }

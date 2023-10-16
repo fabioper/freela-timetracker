@@ -23,7 +23,7 @@ export default function Timer({
       rounded: true,
       outlined: true,
       loading,
-      className: "p-8",
+      className: "p-10",
       onClick: () => onChange(!playing),
     }),
     [loading, onChange, playing],
