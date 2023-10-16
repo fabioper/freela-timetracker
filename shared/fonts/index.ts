@@ -4,6 +4,11 @@ export const inter = localFont({
   variable: "--font-inter",
   src: [
     {
+      path: "./Inter-ExtraLight.ttf",
+      weight: "300",
+      style: "normal",
+    },
+    {
       path: "./Inter-Regular.ttf",
       weight: "400",
       style: "normal",

@@ -21,6 +21,7 @@ export default function Timer({
       rounded: true,
       outlined: true,
       loading,
+      className: "p-8",
       onClick: () => onChange(!playing),
     }),
     [loading, onChange, playing],
@@ -33,12 +34,17 @@ export default function Timer({
       )
     }
 
-    return <Button {...buttonProps} icon={PrimeIcons.PLAY} severity="success" />
+    return <Button {...buttonProps} severity="success" icon={PrimeIcons.PLAY} />
   }, [buttonProps, playing])
 
   return (
-    <div>
-      {formatDuration(duration)}
+    <div className="flex flex-col items-center gap-10 py-10">
+      <div className="flex flex-col gap-5 items-center justify-center rounded-full">
+        <time className="text-6xl md:text-9xl font-light">
+          {formatDuration(duration)}
+        </time>
+      </div>
+
       {button}
     </div>
   )
