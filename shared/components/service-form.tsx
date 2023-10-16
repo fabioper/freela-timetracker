@@ -98,7 +98,10 @@ export default function ServiceForm({
           estimatedHoursTotal: service.estimatedHoursTotal,
           hourValue: service.hourValue,
           clientId: service.clientId,
-          timerIntervals: service.timerIntervals,
+          timerIntervals: service.timerIntervals.map((interval) => ({
+            start: interval.start.toDate(),
+            end: interval.end?.toDate() || null,
+          })),
         })
       }
     })()
