@@ -1,6 +1,6 @@
 import { Button, ButtonProps } from "primereact/button"
 import { PrimeIcons } from "primereact/api"
-import { useMemo } from "react"
+import { ReactNode, useMemo } from "react"
 import { formatDuration } from "@/shared/utils/date"
 
 interface TimerProps {
@@ -8,6 +8,7 @@ interface TimerProps {
   loading?: boolean
   onChange: (isPlaying: boolean) => void | Promise<void>
   duration: number
+  children: (time: ReactNode) => ReactNode
 }
 
 export default function Timer({
@@ -15,6 +16,7 @@ export default function Timer({
   loading = false,
   duration,
   onChange,
+  children,
 }: TimerProps) {
   const buttonProps: ButtonProps = useMemo(
     () => ({
@@ -40,9 +42,11 @@ export default function Timer({
   return (
     <div className="flex flex-col items-center gap-10 py-10">
       <div className="flex flex-col gap-5 items-center justify-center rounded-full">
-        <time className="text-6xl md:text-9xl font-light">
-          {formatDuration(duration)}
-        </time>
+        {children(
+          <time className="flex text-6xl md:text-9xl font-light">
+            {formatDuration(duration)}
+          </time>,
+        )}
       </div>
 
       {button}

@@ -5,5 +5,10 @@ export const dateFormatter = new Intl.DateTimeFormat("pt-br", {
   timeStyle: "short",
 })
 
-export const formatDuration = (milli: number) =>
-  Duration.fromMillis(milli).toFormat("hh:mm:ss")
+export function durationFrom(totalTime: number) {
+  return Duration.fromMillis(totalTime)
+}
+
+export function formatDuration(milli: number) {
+  return durationFrom(milli).toFormat("hh:mm:ss")
+}

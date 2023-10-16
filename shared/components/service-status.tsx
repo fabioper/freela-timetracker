@@ -9,6 +9,7 @@ import { NewServiceDto } from "@/shared/dtos/new-service.dto"
 import { doc, onSnapshot } from "@firebase/firestore"
 import { db } from "@/shared/config/firebase"
 import { produce } from "immer"
+import { durationFrom } from "@/shared/utils/date"
 
 interface ServiceStatusProps {
   serviceId: string
@@ -124,7 +125,52 @@ export default function ServiceStatus({ serviceId }: ServiceStatusProps) {
         loading={loading}
         onChange={handleTimerChange}
         duration={totalTime}
-      />
+      >
+        {(time) => (
+          <div className="w-full">
+            <div className="flex items-center justify-between gap-2">
+              <strong className="font-normal text-[#454545]">
+                Horas estimadas:
+              </strong>
+              <span className="text-lg">{service.estimatedHoursTotal}h</span>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <strong className="font-normal text-[#454545]">
+                Horas restantes:
+              </strong>
+              <span className="text-lg">
+                {service.estimatedHoursTotal ??
+                  0 - durationFrom(totalTime).hours}
+                h
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between gap-2">
+              <strong className="font-normal text-[#454545]">
+                Valor por hora:
+              </strong>
+              <span className="text-lg">
+                {new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(service.hourValue)}
+              </span>
+            </div>
+
+            <div className="my-10">{time}</div>
+
+            <div className="flex items-center justify-between gap-2">
+              <strong className="font-light text-xl">Valor por hora:</strong>
+              <span className="text-lg">
+                {new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(durationFrom(totalTime).hours * service.hourValue)}
+              </span>
+            </div>
+          </div>
+        )}
+      </Timer>
     </div>
   )
 }
