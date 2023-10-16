@@ -137,6 +137,9 @@ export default function ServiceForm({
           onChange={(event) => {
             form.setFieldValue("hourValue", event.value)
           }}
+          onValueChange={(event) => {
+            form.setFieldValue("hourValue", event.value)
+          }}
           onBlur={form.handleBlur}
           value={form.values.hourValue}
           locale="pt-BR"
@@ -159,6 +162,9 @@ export default function ServiceForm({
           className={clsx({ "p-invalid": !isValid("estimatedHoursTotal") })}
           name="estimatedHoursTotal"
           onChange={(event) => {
+            form.setFieldValue("estimatedHoursTotal", event.value)
+          }}
+          onValueChange={(event) => {
             form.setFieldValue("estimatedHoursTotal", event.value)
           }}
           onBlur={form.handleBlur}
