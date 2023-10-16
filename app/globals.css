@@ -17,7 +17,6 @@ body {
 body {
   display: grid;
   grid-template-rows: auto 1fr auto;
-  gap: 2rem;
   background: var(--surface-ground);
   color: var(--text-color);
   @apply font-sans;

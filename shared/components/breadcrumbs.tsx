@@ -11,11 +11,11 @@ export interface BreadcrumbItem {
   path?: Route
 }
 
-export function Breadcrumbs({
-  children,
-}: {
-  children?: ReactElement<BreadcrumbItem> | ReactElement<BreadcrumbItem>[]
-}) {
+type BreadcrumbsChildren =
+  | ReactElement<BreadcrumbItem>
+  | ReactElement<BreadcrumbItem>[]
+
+export function Breadcrumbs({ children }: { children?: BreadcrumbsChildren }) {
   const typedChildren = Children.toArray(
     children,
   ) as ReactElement<BreadcrumbItem>[]
@@ -34,7 +34,7 @@ export function Breadcrumbs({
 
   return (
     <div>
-      <ul className="flex items-center gap-2 text-[#454545] text-sm my-8">
+      <ul className="flex items-center gap-2 text-[#454545] text-sm my-5">
         <li
           className={clsx("flex items-center", {
             "after:content-['/']": typedChildren.length === 0,
@@ -59,6 +59,6 @@ export function Breadcrumbs({
   )
 }
 
-export function Breadcrumb(props: BreadcrumbItem) {
+export function Breadcrumb(_: BreadcrumbItem) {
   return <></>
 }

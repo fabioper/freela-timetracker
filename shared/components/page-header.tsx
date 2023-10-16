@@ -14,7 +14,7 @@ export default function PageHeader({
   children,
 }: PropsWithChildren<PageHeaderProps>) {
   return (
-    <header className="flex items-center justify-between mb-10">
+    <header className="flex items-center justify-between mb-5">
       <h2 className="text-3xl font-bold flex flex-col gap-2">
         {tag && (
           <Tag value={tag} severity={tagSeverity} className="w-8/12 p-0 px-2" />

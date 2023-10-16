@@ -41,14 +41,10 @@ export default function Timer({
 
   return (
     <div className="flex flex-col items-center gap-10">
-      {children && (
-        <div className="flex flex-col gap-5 items-center justify-center rounded-full w-full">
-          {children(
-            <time className="flex text-6xl md:text-9xl font-light">
-              {formatDuration(duration)}
-            </time>,
-          )}
-        </div>
+      {children?.(
+        <time className="flex text-6xl md:text-9xl font-light">
+          {formatDuration(duration)}
+        </time>,
       )}
 
       {button}
