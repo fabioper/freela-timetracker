@@ -6,6 +6,7 @@ import { Collections } from "@/shared/constants"
 import { Button } from "primereact/button"
 import Link from "next/link"
 import ServicesList from "@/shared/components/services-list"
+import { Breadcrumb, Breadcrumbs } from "@/shared/components/breadcrumbs"
 
 interface ClientPageProps {
   params: { slug: string }
@@ -24,6 +25,10 @@ export default async function ClientPage({ params }: ClientPageProps) {
   return (
     <main>
       <div className="container">
+        <Breadcrumbs>
+          <Breadcrumb label={client.name} />
+        </Breadcrumbs>
+
         <PageHeader title={client.name}>
           <Link href={`/${client.slug}/novo-servico`}>
             <Button label="Novo serviço" />

@@ -5,6 +5,8 @@ import { ClientDto } from "@/shared/dtos/client.dto"
 import { ServiceDto } from "@/shared/dtos/service.dto"
 import PageHeader from "@/shared/components/page-header"
 import ServiceStatus from "@/shared/components/service-status"
+import { Breadcrumb, Breadcrumbs } from "@/shared/components/breadcrumbs"
+import { Route } from "next"
 
 interface ServicePageProps {
   params: { slug: string; serviceId: string }
@@ -26,6 +28,11 @@ export default async function ServicePage({ params }: ServicePageProps) {
   return (
     <main>
       <div className="container">
+        <Breadcrumbs>
+          <Breadcrumb label={client.name} path={`/${client.slug}` as Route} />
+          <Breadcrumb label={service.name} />
+        </Breadcrumbs>
+
         <PageHeader title={service.name} />
 
         <ServiceStatus serviceId={service.id} />

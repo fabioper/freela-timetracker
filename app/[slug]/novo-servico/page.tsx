@@ -4,6 +4,8 @@ import { getItemBySlug } from "@/shared/service/firestore"
 import { notFound } from "next/navigation"
 import { Collections } from "@/shared/constants"
 import { ClientDto } from "@/shared/dtos/client.dto"
+import { Breadcrumb, Breadcrumbs } from "@/shared/components/breadcrumbs"
+import { Route } from "next"
 
 interface NewClientServicePageProps {
   params: { slug: string }
@@ -24,6 +26,11 @@ export default async function NewClientServicePage({
   return (
     <main>
       <div className="container">
+        <Breadcrumbs>
+          <Breadcrumb label={client.name} path={`/${client.slug}` as Route} />
+          <Breadcrumb label="Novo serviço" />
+        </Breadcrumbs>
+
         <PageHeader title="Novo serviço" />
         <ServiceForm clientId={client.id} resetPath={`/${client.slug}`} />
       </div>
