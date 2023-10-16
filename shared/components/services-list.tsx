@@ -54,17 +54,20 @@ export default function ServicesList({ clientId }: ServicesListProps) {
   )
 
   return (
-    <div className="grid grid-cols-auto gap-2">
-      {services.map((service) => (
-        <Link href={`${pathname}/${service.id}`} key={service.id}>
-          <Card title={service.name} menu={getMenuItems(service)}>
-            <time className="text-sm">
-              {dateFormatter.format(service.addedAt.toDate())}
-            </time>
-          </Card>
-        </Link>
-      ))}
-      <ConfirmDialog />
+    <div>
+      <h2 className="font-bold mb-5">Serviços:</h2>
+      <div className="grid grid-cols-auto gap-2">
+        {services.map((service) => (
+          <Link href={`${pathname}/${service.id}`} key={service.id}>
+            <Card title={service.name} menu={getMenuItems(service)}>
+              <time className="text-sm">
+                {dateFormatter.format(service.addedAt.toDate())}
+              </time>
+            </Card>
+          </Link>
+        ))}
+        <ConfirmDialog />
+      </div>
     </div>
   )
 }

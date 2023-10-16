@@ -29,7 +29,7 @@ export default async function ClientPage({ params }: ClientPageProps) {
           <Breadcrumb label={client.name} />
         </Breadcrumbs>
 
-        <PageHeader title={client.name}>
+        <PageHeader title={client.name} tag="Cliente" tagSeverity="info">
           <Link href={`/${client.slug}/novo-servico`}>
             <Button label="Novo serviço" />
           </Link>

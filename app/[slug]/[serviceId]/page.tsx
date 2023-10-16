@@ -33,7 +33,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <Breadcrumb label={service.name} />
         </Breadcrumbs>
 
-        <PageHeader title={service.name} />
+        <PageHeader title={service.name} tag="Serviço" tagSeverity="warning" />
 
         <ServiceStatus serviceId={service.id} />
       </div>
