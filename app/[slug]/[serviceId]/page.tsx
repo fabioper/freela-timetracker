@@ -7,6 +7,8 @@ import PageHeader from "@/shared/components/page-header"
 import ServiceStatus from "@/shared/components/service-status"
 import { Breadcrumb, Breadcrumbs } from "@/shared/components/breadcrumbs"
 import { Route } from "next"
+import { Button } from "primereact/button"
+import Link from "next/link"
 
 interface ServicePageProps {
   params: { slug: string; serviceId: string }
@@ -33,7 +35,16 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <Breadcrumb label={service.name} />
         </Breadcrumbs>
 
-        <PageHeader title={service.name} tag="Serviço" tagSeverity="warning" />
+        <PageHeader
+          title={service.name}
+          tag="Serviço"
+          tagSeverity="warning"
+          center
+        >
+          <Link href={`/${client.slug}/${service.id}/editar`}>
+            <Button label="Editar" icon="pi pi-pencil" text />
+          </Link>
+        </PageHeader>
 
         <ServiceStatus serviceId={service.id} />
       </div>
